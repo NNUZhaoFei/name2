@@ -1,0 +1,923 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>draw</title>
+    <style type="text/css">
+      body
+      {
+          padding: 10px;
+          margin: 0;
+      }
+      #biaotilan
+      {
+          width: 1666;
+          margin: 40px;
+          margin: 0;
+          padding: 0;
+          height: 200px;
+      }
+      #gongnenglan
+      {
+          width: 15%;
+          overflow: hidden;
+          height:100%;
+          float: left;
+          margin-right:50px;
+      }
+      #ditukuang
+      {
+          height: 450px;
+          width: 60%;
+          float: left;
+          border-width:0px;
+          margin-left:50px;
+      }
+
+      input[type="file"]{
+       color:transparent;
+       font-size: 30px;
+       opacity: 0;
+       position: absolute;
+      }
+
+
+       #biaotilan{margin:2px;text-align:center;}
+       #ditukuang{border-style:solid;border-width:2px;border-color:Blue;margin:2px;}
+      h2:hover{text-decoration:underline;color:Black;}
+      #gongneng:hover {height:50px;background-color:#CCCCCC;border-width:3px;border-color:Blue;margin:2px;font-size:large;}
+      #gongneng{height:40px;background-color:#FFFAF0;font-size:small;border-style:solid;border-width:2px;border-color:Blue;}
+      
+      .menue:hover .menue div{display:none;}
+     
+
+
+
+  </style>
+    <script type="text/javascript">
+        var adress;
+        var line1= new line();
+        var file_first;
+        var file_second;
+        var character1=new character();
+        var character2=new character();
+        
+        function point(id,x,y,angle,scale)
+        {
+            this.id=id;
+            this.x=x;
+            this.y=y;
+            this.angle=angle;
+            this.scale=scale;
+        }                                //点结构
+        
+        function line(points)
+        {
+           var i=0;
+           this.points = new Array(100);
+           for (;i<100;i++)
+           {
+              this.points[i]= new point();
+           }
+
+        }                               //线结构
+
+        function character(lines)
+        {
+           this.lines= new Array(100);
+           var k=0;
+        for(;k<100;k++)
+        {
+            this.lines[k]=new line();
+        }
+
+        }
+
+        
+
+
+
+  function readText(canvas_id) {
+    if(canvas_id==1)
+    {
+      var file=document.getElementById("file").files[0];
+
+    }
+     else if(canvas_id==2)
+     {
+     var file=document.getElementById("file2").files[0];
+
+     }
+      var reader=new FileReader();
+      var i=0;
+      reader.readAsText(file);
+      reader.onload=function(data)
+      {
+
+        //this.result[0];
+        var num=0;
+        var j=-4;
+        var flag=0;
+        var number_char=-1;
+
+       while(this.result[j+1]!='e'||this.result[j+4]!='e')
+       {
+        var a=0;
+        j=j+3;
+        i=0;
+        number_char++;
+        while(line1.points[a].id!=null)
+        {
+          line1.points[a].id=null;
+          line1.points[a].x=null;
+          line1.points[a].y=null;
+          a++;
+        }
+       while(this.result[j+1]!='e')
+        {
+          var a="";
+          j++;
+          while(this.result[j]!=','&&this.result[j]!='e')
+          {
+            a=a+this.result[j];
+            j++;
+          }
+          if(flag==0)
+          {
+          line1.points[i].id=a;
+          if(canvas_id==1)
+                character1.lines[number_char].points[i].id=a;
+          else if(canvas_id==2)
+                character2.lines[number_char].points[i].id=a;
+          }
+
+          else if(flag==1)
+          {
+          line1.points[i].x=a;
+          if(canvas_id==1)
+                character1.lines[number_char].points[i].x=a;
+          else if(canvas_id==2)
+                character2.lines[number_char].points[i].x=a;
+          }
+          else if(flag==2)
+          {         
+          line1.points[i].y=a;
+          if(canvas_id==1)
+                character1.lines[number_char].points[i].y=a;
+          else if(canvas_id==2)
+                character2.lines[number_char].points[i].y=a;
+          flag=-1;
+          i++;
+          }
+          flag++;
+
+         // num=num+6;
+        }
+       draw(canvas_id);
+       }
+      }    
+    }
+
+function draw(canvas_id)
+{
+  //var element = document.getElementById("div1");
+      //创建段落
+     // var canvas = document.createElement("canvas");
+     if(canvas_id==1)
+      var canvas=document.getElementById("myCanvas");
+     else if(canvas_id==2)
+     var canvas=document.getElementById("myCanvas2");
+     // canvas.width  = 500; 
+     // canvas.height = 300; 
+      var ctx = canvas.getContext("2d");//返回一个二维的绘画环境
+      var i=0;
+
+
+      ctx.beginPath();
+      while(line1.points[i+1].id!=null)
+      {
+      ctx.moveTo(line1.points[i].x,line1.points[i].y);
+      ctx.lineTo(line1.points[i+1].x,line1.points[i+1].y);
+      ctx.strokeStyle="black"
+      ctx.lineWidth=5;
+      ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+    
+      i++;
+      }
+      ctx.closePath();
+      //element.appendChild(canvas);
+
+}
+
+function draw_fangge()
+{
+  var canvas=document.getElementById("myCanvas");
+  var ctx = canvas.getContext("2d");//返回一个二维的绘画环境
+  var a;
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  for(a=0;a<=canvas.clientWidth;a=a+20)
+  {
+  ctx.moveTo(a,0);
+  ctx.lineTo(a,canvas.clientHeight);
+  ctx.strokeStyle="blue"
+  ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+  }
+
+  for(a=0;a<=canvas.clientWidth;a=a+20)
+  {
+  ctx.moveTo(0,a);
+  ctx.lineTo(canvas.clientHeight,a);
+  ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+  }
+  ctx.closePath();
+
+  var canvas=document.getElementById("myCanvas2");
+  var ctx = canvas.getContext("2d");//返回一个二维的绘画环境
+  var a;
+
+  ctx.beginPath();
+  ctx.lineWidth=1;
+  for(a=0;a<=canvas.clientWidth;a=a+20)
+  {
+  ctx.moveTo(a,0);
+  ctx.lineTo(a,canvas.clientHeight);
+  ctx.strokeStyle="blue"
+  ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+  }
+
+  for(a=0;a<=canvas.clientWidth;a=a+20)
+  {
+  ctx.moveTo(0,a);
+  ctx.lineTo(canvas.clientHeight,a);
+  ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+  }
+  ctx.closePath();
+}
+        
+   function clear_canvas()
+        {
+      var canvas=document.getElementById("myCanvas");
+
+     var canvas2=document.getElementById("myCanvas2");
+     // canvas.width  = 500; 
+     // canvas.height = 300; 
+      var ctx = canvas.getContext("2d");//返回一个二维的绘画环境
+      var ctx2 = canvas2.getContext("2d");//返回一个二维的绘画环境
+      ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+      ctx2.clearRect(0,0,canvas2.clientWidth,canvas2.clientHeight);
+      draw_fangge();
+        }
+
+    function zuoyi( direction)
+    {
+        clear_canvas();
+     var canvas=document.getElementById("myCanvas");
+     var canvas2=document.getElementById("myCanvas2");
+     // canvas.width  = 500; 
+     // canvas.height = 300; 
+      var ctx = canvas.getContext("2d");//返回一个二维的绘画环境
+      var ctx2 = canvas2.getContext("2d");//返回一个二维的绘画环境
+      var i=0;
+      var a=0;
+
+
+      ctx.beginPath();
+      while(character1.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character1.lines[a-1].points[i+1].id!=null)
+      {
+        character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x-20;
+        character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x-20; 
+      ctx.moveTo(character1.lines[a-1].points[i].x,character1.lines[a-1].points[i].y);
+      ctx.lineTo(character1.lines[a-1].points[i+1].x,character1.lines[a-1].points[i+1].y);
+      ctx.strokeStyle="black"
+      ctx.lineWidth=5;
+      ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character1.lines[a-1].points[i+2].id)
+      character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x+20; 
+      i++;
+      }
+      }
+      ctx.closePath();
+
+      a=0;
+      ctx2.beginPath();
+      while(character2.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character2.lines[a-1].points[i+1].id!=null)
+      {
+        character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x-20;
+        character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x-20; 
+      ctx2.moveTo(character2.lines[a-1].points[i].x,character2.lines[a-1].points[i].y);
+      ctx2.lineTo(character2.lines[a-1].points[i+1].x,character2.lines[a-1].points[i+1].y);
+      ctx2.strokeStyle="black"
+      ctx2.lineWidth=5;
+      ctx2.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character2.lines[a-1].points[i+2].id)
+      character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x+20; 
+      i++;
+      }
+      }
+      ctx2.closePath();
+
+    }
+
+    function youyi( direction)
+    {
+        clear_canvas();
+     var canvas=document.getElementById("myCanvas");
+     var canvas2=document.getElementById("myCanvas2");
+     // canvas.width  = 500; 
+     // canvas.height = 300; 
+      var ctx = canvas.getContext("2d");//返回一个二维的绘画环境
+      var ctx2 = canvas2.getContext("2d");//返回一个二维的绘画环境
+      var i=0;
+      var a=0;
+
+
+      ctx.beginPath();
+      while(character1.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character1.lines[a-1].points[i+1].id!=null)
+      {
+        character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x+20;
+        character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x+20; 
+      ctx.moveTo(character1.lines[a-1].points[i].x,character1.lines[a-1].points[i].y);
+      ctx.lineTo(character1.lines[a-1].points[i+1].x,character1.lines[a-1].points[i+1].y);
+      ctx.strokeStyle="black"
+      ctx.lineWidth=5;
+      ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character1.lines[a-1].points[i+2].id)
+      character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x-20; 
+      i++;
+      }
+      }
+      ctx.closePath();
+
+      a=0;
+      ctx2.beginPath();
+      while(character2.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character2.lines[a-1].points[i+1].id!=null)
+      {
+        character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x+20;
+        character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x+20; 
+      ctx2.moveTo(character2.lines[a-1].points[i].x,character2.lines[a-1].points[i].y);
+      ctx2.lineTo(character2.lines[a-1].points[i+1].x,character2.lines[a-1].points[i+1].y);
+      ctx2.strokeStyle="black"
+      ctx2.lineWidth=5;
+      ctx2.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character2.lines[a-1].points[i+2].id)
+      character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x-20; 
+      i++;
+      }
+      }
+      ctx2.closePath();
+
+    }
+
+    function shangyi( direction)
+    {
+        clear_canvas();
+     var canvas=document.getElementById("myCanvas");
+     var canvas2=document.getElementById("myCanvas2");
+     // canvas.width  = 500; 
+     // canvas.height = 300; 
+      var ctx = canvas.getContext("2d");//返回一个二维的绘画环境
+      var ctx2 = canvas2.getContext("2d");//返回一个二维的绘画环境
+      var i=0;
+      var a=0;
+
+
+      ctx.beginPath();
+      while(character1.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character1.lines[a-1].points[i+1].id!=null)
+      {
+        character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y-20;
+        character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y-20; 
+      ctx.moveTo(character1.lines[a-1].points[i].x,character1.lines[a-1].points[i].y);
+      ctx.lineTo(character1.lines[a-1].points[i+1].x,character1.lines[a-1].points[i+1].y);
+      ctx.strokeStyle="black"
+      ctx.lineWidth=5;
+      ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character1.lines[a-1].points[i+2].id)
+      character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y+20; 
+      i++;
+      }
+      }
+      ctx.closePath();
+
+      a=0;
+      ctx2.beginPath();
+      while(character2.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character2.lines[a-1].points[i+1].id!=null)
+      {
+        character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y-20;
+        character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y-20; 
+      ctx2.moveTo(character2.lines[a-1].points[i].x,character2.lines[a-1].points[i].y);
+      ctx2.lineTo(character2.lines[a-1].points[i+1].x,character2.lines[a-1].points[i+1].y);
+      ctx2.strokeStyle="black"
+      ctx2.lineWidth=5;
+      ctx2.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character2.lines[a-1].points[i+2].id)
+      character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y+20; 
+      i++;
+      }
+      }
+      ctx2.closePath();
+
+    }
+
+    function xiayi( direction)
+    {
+        clear_canvas();
+     var canvas=document.getElementById("myCanvas");
+     var canvas2=document.getElementById("myCanvas2");
+     // canvas.width  = 500; 
+     // canvas.height = 300; 
+      var ctx = canvas.getContext("2d");//返回一个二维的绘画环境
+      var ctx2 = canvas2.getContext("2d");//返回一个二维的绘画环境
+      var i=0;
+      var a=0;
+
+
+      ctx.beginPath();
+      while(character1.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character1.lines[a-1].points[i+1].id!=null)
+      {
+        character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y+20;
+        character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y+20; 
+      ctx.moveTo(character1.lines[a-1].points[i].x,character1.lines[a-1].points[i].y);
+      ctx.lineTo(character1.lines[a-1].points[i+1].x,character1.lines[a-1].points[i+1].y);
+      ctx.strokeStyle="black"
+      ctx.lineWidth=5;
+      ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character1.lines[a-1].points[i+2].id)
+      character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y-20; 
+      i++;
+      }
+      }
+      ctx.closePath();
+
+      a=0;
+      ctx2.beginPath();
+      while(character2.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character2.lines[a-1].points[i+1].id!=null)
+      {
+        character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y+20;
+        character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y+20; 
+      ctx2.moveTo(character2.lines[a-1].points[i].x,character2.lines[a-1].points[i].y);
+      ctx2.lineTo(character2.lines[a-1].points[i+1].x,character2.lines[a-1].points[i+1].y);
+      ctx2.strokeStyle="black"
+      ctx2.lineWidth=5;
+      ctx2.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character2.lines[a-1].points[i+2].id)
+      character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y-20; 
+      i++;
+      }
+      }
+      ctx2.closePath();
+
+    }
+
+    function bianhua(kind)
+    {
+        clear_canvas();
+     var canvas=document.getElementById("myCanvas");
+     var canvas2=document.getElementById("myCanvas2");
+     // canvas.width  = 500; 
+     // canvas.height = 300; 
+      var ctx = canvas.getContext("2d");//返回一个二维的绘画环境
+      var ctx2 = canvas2.getContext("2d");//返回一个二维的绘画环境
+      var i=0;
+      var a=0;
+      var temp1;
+      var temp2;         //暂存xy坐标。降低旋转变化的误差。
+      var x1;
+      var y1;
+
+
+      ctx.beginPath();
+      while(character1.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character1.lines[a-1].points[i+1].id!=null)
+      {
+          if(kind==6)
+          {
+        character1.lines[a-1].points[i].x=320-character1.lines[a-1].points[i].x;
+        character1.lines[a-1].points[i+1].x=320- character1.lines[a-1].points[i+1].x;
+          }
+          else if(kind==7)
+          {
+        character1.lines[a-1].points[i].y=320-character1.lines[a-1].points[i].y;
+        character1.lines[a-1].points[i+1].y=320- character1.lines[a-1].points[i+1].y; 
+          }
+          else if(kind==4)
+          {
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x-160;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y-160;//移回原点
+            x1=character1.lines[a-1].points[i].x;
+            y1=character1.lines[a-1].points[i].y;
+            character1.lines[a-1].points[i].x=x1*Math.cos(Math.PI/12)-y1*Math.sin(Math.PI/12);
+            character1.lines[a-1].points[i].y=x1*Math.sin(Math.PI/12)+y1*Math.cos(Math.PI/12);
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x+160;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y+160
+
+            temp1= character1.lines[a-1].points[i+1].x;
+            temp2= character1.lines[a-1].points[i+1].y;
+
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x-160;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y-160;//移回原点
+            x1=character1.lines[a-1].points[i+1].x;
+            y1=character1.lines[a-1].points[i+1].y;
+            character1.lines[a-1].points[i+1].x=x1*Math.cos(Math.PI/12)-y1*Math.sin(Math.PI/12);
+            character1.lines[a-1].points[i+1].y=x1*Math.sin(Math.PI/12)+y1*Math.cos(Math.PI/12);
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x+160;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y+160;
+          }
+          else if(kind==5)
+          {
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x-160;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y-160;//移回原点
+            x1=character1.lines[a-1].points[i].x;
+            y1=character1.lines[a-1].points[i].y;
+            character1.lines[a-1].points[i].x=x1*Math.cos(-Math.PI/12)-y1*Math.sin(-Math.PI/12);
+            character1.lines[a-1].points[i].y=x1*Math.sin(-Math.PI/12)+y1*Math.cos(-Math.PI/12);
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x+160;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y+160
+
+            temp1= character1.lines[a-1].points[i+1].x;
+            temp2= character1.lines[a-1].points[i+1].y;
+
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x-160;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y-160;//移回原点
+            x1=character1.lines[a-1].points[i+1].x;
+            y1=character1.lines[a-1].points[i+1].y;
+            character1.lines[a-1].points[i+1].x=x1*Math.cos(-Math.PI/12)-y1*Math.sin(-Math.PI/12);
+            character1.lines[a-1].points[i+1].y=x1*Math.sin(-Math.PI/12)+y1*Math.cos(-Math.PI/12);
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x+160;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y+160;
+          }
+          else if(kind==3)
+          {
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x-160;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y-160;//移回原点
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x*0.8;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y*0.8;
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x+160;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y+160;
+
+            temp1= character1.lines[a-1].points[i+1].x;
+            temp2= character1.lines[a-1].points[i+1].y;
+
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x-160;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y-160;//移回原点
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x*0.8;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y*0.8;
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x+160;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y+160;
+          }
+
+          else if(kind==2)
+          {
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x-160;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y-160;//移回原点
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x*1.2;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y*1.2;
+            character1.lines[a-1].points[i].x=character1.lines[a-1].points[i].x+160;
+            character1.lines[a-1].points[i].y=character1.lines[a-1].points[i].y+160;
+
+            temp1= character1.lines[a-1].points[i+1].x;
+            temp2= character1.lines[a-1].points[i+1].y;
+
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x-160;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y-160;//移回原点
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x*1.2;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y*1.2;
+            character1.lines[a-1].points[i+1].x=character1.lines[a-1].points[i+1].x+160;
+            character1.lines[a-1].points[i+1].y=character1.lines[a-1].points[i+1].y+160;
+          }
+          else if(kind==1)
+          {
+              var dx;
+              var dy;
+              dx=character1.lines[a-1].points[i].x-160;
+              dy=-dx*Math.tan(Math.PI*15/180);
+              character1.lines[a-1].points[i].y=parseFloat(character1.lines[a-1].points[i].y)+parseFloat(dy);
+
+              temp1= character1.lines[a-1].points[i+1].x;
+              temp2= character1.lines[a-1].points[i+1].y;
+
+              dx=character1.lines[a-1].points[i+1].x-160;
+              dy=-dx*Math.tan(Math.PI*15/180);
+              character1.lines[a-1].points[i+1].y=parseFloat(character1.lines[a-1].points[i+1].y)+parseFloat(dy);
+          }
+          else if(kind==0)
+          {
+            var dx;
+            var dy;
+            dy=character1.lines[a-1].points[i].y-160;
+            dx=dy*Math.tan(Math.PI*15/180);
+            character1.lines[a-1].points[i].x=parseFloat(character1.lines[a-1].points[i].x)+parseFloat(dx);
+
+            temp1= character1.lines[a-1].points[i+1].x;
+            temp2= character1.lines[a-1].points[i+1].y;
+
+            dy=character1.lines[a-1].points[i+1].y-160;
+            dx=dy*Math.tan(Math.PI*15/180);
+            character1.lines[a-1].points[i+1].x=parseFloat(character1.lines[a-1].points[i+1].x)+parseFloat(dx);
+          }
+
+      ctx.moveTo(character1.lines[a-1].points[i].x,character1.lines[a-1].points[i].y);
+      ctx.lineTo(character1.lines[a-1].points[i+1].x,character1.lines[a-1].points[i+1].y);
+      ctx.strokeStyle="black"
+      ctx.lineWidth=5;
+      ctx.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character1.lines[a-1].points[i+2].id)
+        if(kind==6)
+        {
+            character1.lines[a-1].points[i+1].x=320-character1.lines[a-1].points[i+1].x;
+        }
+        else if(kind==7)
+        {
+            character1.lines[a-1].points[i+1].y=320-character1.lines[a-1].points[i+1].y;
+        }
+        else if(kind==4)
+        {
+            character1.lines[a-1].points[i+1].x=temp1;
+            character1.lines[a-1].points[i+1].y=temp2;
+
+        }
+        else if(kind==5)
+        {
+            character1.lines[a-1].points[i+1].x=temp1;
+            character1.lines[a-1].points[i+1].y=temp2;
+        }
+        else if(kind==3)
+        {
+            character1.lines[a-1].points[i+1].x=temp1;
+            character1.lines[a-1].points[i+1].y=temp2;
+        }
+        else
+        {
+            character1.lines[a-1].points[i+1].x=temp1;
+            character1.lines[a-1].points[i+1].y=temp2;
+        }
+      i++;
+      }
+      }
+      ctx.closePath();
+
+      a=0;
+      ctx2.beginPath();
+      while(character2.lines[a++].points[0].id!=null)
+      {
+      i=0;
+      while(character2.lines[a-1].points[i+1].id!=null)
+      {
+        if(kind==6)
+        {
+            character2.lines[a-1].points[i].x=320-character2.lines[a-1].points[i].x;
+            character2.lines[a-1].points[i+1].x=320- character2.lines[a-1].points[i+1].x;
+        } 
+        else if(kind==7)
+        {
+            character2.lines[a-1].points[i].y=320-character2.lines[a-1].points[i].y;
+            character2.lines[a-1].points[i+1].y=320- character2.lines[a-1].points[i+1].y;
+        }
+        else if(kind==4)
+        {
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x-160;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y-160;//移回原点
+            x1=character2.lines[a-1].points[i].x;
+            y1=character2.lines[a-1].points[i].y;
+            character2.lines[a-1].points[i].x=x1*Math.cos(Math.PI/12)-y1*Math.sin(Math.PI/12);
+            character2.lines[a-1].points[i].y=x1*Math.sin(Math.PI/12)+y1*Math.cos(Math.PI/12);
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x+160;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y+160
+
+            temp1= character2.lines[a-1].points[i+1].x;
+            temp2= character2.lines[a-1].points[i+1].y;
+
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x-160;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y-160;//移回原点
+            x1=character2.lines[a-1].points[i+1].x;
+            y1=character2.lines[a-1].points[i+1].y;
+            character2.lines[a-1].points[i+1].x=x1*Math.cos(Math.PI/12)-y1*Math.sin(Math.PI/12);
+            character2.lines[a-1].points[i+1].y=x1*Math.sin(Math.PI/12)+y1*Math.cos(Math.PI/12);
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x+160;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y+160;
+        }
+        else if(kind==5)
+        {
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x-160;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y-160;//移回原点
+            x1=character2.lines[a-1].points[i].x;
+            y1=character2.lines[a-1].points[i].y;
+            character2.lines[a-1].points[i].x=x1*Math.cos(-Math.PI/12)-y1*Math.sin(-Math.PI/12);
+            character2.lines[a-1].points[i].y=x1*Math.sin(-Math.PI/12)+y1*Math.cos(-Math.PI/12);
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x+160;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y+160
+
+            temp1= character2.lines[a-1].points[i+1].x;
+            temp2= character2.lines[a-1].points[i+1].y;
+
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x-160;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y-160;//移回原点
+            x1=character2.lines[a-1].points[i+1].x;
+            y1=character2.lines[a-1].points[i+1].y;
+            character2.lines[a-1].points[i+1].x=x1*Math.cos(-Math.PI/12)-y1*Math.sin(-Math.PI/12);
+            character2.lines[a-1].points[i+1].y=x1*Math.sin(-Math.PI/12)+y1*Math.cos(-Math.PI/12);
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x+160;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y+160;
+        }
+        else if(kind==3)
+          {
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x-160;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y-160;//移回原点
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x*0.8;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y*0.8;
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x+160;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y+160;
+
+            temp1= character2.lines[a-1].points[i+1].x;
+            temp2= character2.lines[a-1].points[i+1].y;
+
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x-160;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y-160;//移回原点
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x*0.8;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y*0.8;
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x+160;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y+160;
+          }
+          else if(kind==2)
+          {
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x-160;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y-160;//移回原点
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x*1.2;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y*1.2;
+            character2.lines[a-1].points[i].x=character2.lines[a-1].points[i].x+160;
+            character2.lines[a-1].points[i].y=character2.lines[a-1].points[i].y+160;
+
+            temp1= character2.lines[a-1].points[i+1].x;
+            temp2= character2.lines[a-1].points[i+1].y;
+
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x-160;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y-160;//移回原点
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x*1.2;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y*1.2;
+            character2.lines[a-1].points[i+1].x=character2.lines[a-1].points[i+1].x+160;
+            character2.lines[a-1].points[i+1].y=character2.lines[a-1].points[i+1].y+160;
+          }
+          else if(kind==1)
+          {
+              var dx;
+              var dy;
+              dx=character2.lines[a-1].points[i].x-160;
+              dy=-dx*Math.tan(Math.PI*15/180);
+              character2.lines[a-1].points[i].y=parseFloat(character2.lines[a-1].points[i].y)+parseFloat(dy);
+
+              temp1= character2.lines[a-1].points[i+1].x;
+              temp2= character2.lines[a-1].points[i+1].y;
+
+              dx=character2.lines[a-1].points[i+1].x-160;
+              dy=-dx*Math.tan(Math.PI*15/180);
+              character2.lines[a-1].points[i+1].y=parseFloat(character2.lines[a-1].points[i+1].y)+parseFloat(dy);
+          }
+          else if(kind==0)
+          {
+            var dx;
+            var dy;
+            dy=character2.lines[a-1].points[i].y-160;
+            dx=dy*Math.tan(Math.PI*15/180);
+            character2.lines[a-1].points[i].x=parseFloat(character2.lines[a-1].points[i].x)+parseFloat(dx);
+
+            temp1= character2.lines[a-1].points[i+1].x;
+            temp2= character2.lines[a-1].points[i+1].y;
+
+            dy=character2.lines[a-1].points[i+1].y-160;
+            dx=dy*Math.tan(Math.PI*15/180);
+            character2.lines[a-1].points[i+1].x=parseFloat(character2.lines[a-1].points[i+1].x)+parseFloat(dx);
+          }
+      ctx2.moveTo(character2.lines[a-1].points[i].x,character2.lines[a-1].points[i].y);
+      ctx2.lineTo(character2.lines[a-1].points[i+1].x,character2.lines[a-1].points[i+1].y);
+      ctx2.strokeStyle="black"
+      ctx2.lineWidth=5;
+      ctx2.stroke();                    //stroke() 方法会实际地绘制出通过 moveTo() 和 lineTo() 方法定义的路径。默认颜色是黑色。
+      if(character2.lines[a-1].points[i+2].id)
+      if(kind==6)
+      {
+        character2.lines[a-1].points[i+1].x=320-character2.lines[a-1].points[i+1].x;
+      }
+      else if(kind==7)
+      {
+        character2.lines[a-1].points[i+1].y=320-character2.lines[a-1].points[i+1].y;
+      }
+      else if(kind==4)
+      {
+        character2.lines[a-1].points[i+1].x=temp1;
+        character2.lines[a-1].points[i+1].y=temp2;
+      }
+      else if(kind==5)
+      {
+        character2.lines[a-1].points[i+1].x=temp1;
+        character2.lines[a-1].points[i+1].y=temp2;
+      }
+      else if(kind==3)
+      {
+        character2.lines[a-1].points[i+1].x=temp1;
+        character2.lines[a-1].points[i+1].y=temp2;  
+      }
+      else
+      {
+        character2.lines[a-1].points[i+1].x=temp1;
+        character2.lines[a-1].points[i+1].y=temp2;  
+      }
+      i++;
+      }
+      }
+      ctx2.closePath();
+    }
+
+
+             </script>
+
+</head>
+<body onload="draw_fangge()">
+
+    <div id="biaotilan";>
+        <img  src="F:\学习\大三上\gis算法\name\yourname.jpg"
+                 alt="南京师范大学" style="height: 200px; width:80%" />
+         </div>
+     
+         </br>
+         </br>
+     
+         <div style="width:11%;height:585px;float:left;"> </div>
+     
+         <div id="gongnenglan">
+             <div id="gongneng">
+               
+                <span style="font-family:宋体 Std L;color:#008B8B;font-style:normal;"> <input type="file" id="file"/><p style="text-align:center;">选择姓氏文件</p></span>
+             </div>
+             <div id="gongneng">             
+                <input type="button" onclick="readText(1)" value="显示" style="height:100%;width:100%">
+             </div>
+             <div id="gongneng">
+                <span style="font-family:宋体 Std L;color:#008B8B;font-style:normal;"> <input type="file" id="file2"/><p style="text-align:center;">选择名号文件</p></span>
+             </div>
+             <div id="gongneng" >
+                <input type="button" onclick="readText(2)" value="显示" style="height:100%;width:100%">
+             </div>  
+             <div id="gongneng"  >
+                <input type="button" onclick="clear_canvas()" value="清除" style="height:100%;width:100%">
+             </div>  
+             <div id="gongneng"  >
+                <input type="button" onclick="bianhua(0)" value="左斜变化" style="height:100%;width:100%">
+             </div>  
+             <div id="gongneng"  >
+                <input type="button" onclick="bianhua(1)" value="耸肩变化" style="height:100%;width:100%">
+             </div>  
+             <div id="gongneng"  class="menue4">
+                <input type="button" onclick="" value="比例变化" style="height:100%;width:100%">
+             </div>  
+             <div id="gongneng" class="menue3" >
+                <input type="button" onclick="clear_canvas()" value="旋转变化" style="height:100%;width:100%">
+
+             </div>  
+             <div id="gongneng" class="menue2"  >
+                <input type="button" onclick="" value="对称变化" style="height:100%;width:100%">
+
+             </div>  
+             <div id="gongneng" class="menue" >
+               
+            <ul>上移</ul>    
+                </div>
+             </div>  
+         </div>
+     
+     
+         <div id="ditukuang">
+            <canvas id="myCanvas" width="320" height="320" style="float:left;margin:70px;"></canvas>
+            <canvas id="myCanvas2" width="320" height="320" style="float:left;margin:70px;"></canvas>
+         </div>
+<div>
+
+
+</div>
+</body>
+
+</html>
